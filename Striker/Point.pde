@@ -7,7 +7,7 @@ public class Point {
     this.id = _id;
     this.posX = _posX;
     this.posY = _posY;
-    this.textSize = 12;
+    this.textSize = 30;
   }
   
   public Point( int _id, float _posX, float _posY, int _textSize ) {

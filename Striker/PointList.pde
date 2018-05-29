@@ -29,7 +29,7 @@ public class PointList {
       }
     }
     
-    textSize(25);
+    textSize(30);
     text("Active elements: " + counter, 10, 25 );
   }
   
