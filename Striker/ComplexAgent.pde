@@ -1,10 +1,8 @@
-import android.view.MotionEvent;
-
-public class MultiTouchAgent extends Agent {
+public class ComplexAgent extends Agent {
   private float[] sensitivity;
   
-  public MultiTouchAgent( Scene scene ){
-    super( scene.inputHandler( ) );
+  public ComplexAgent( Scene scene ) {
+    super( scene.inputHandler( ) );    
     sensitivity = new float[]{ 10, 10, 10, 10 , 10, 10 };
   }
   
@@ -12,12 +10,9 @@ public class MultiTouchAgent extends Agent {
     this.sensitivity = _sensitivity;
   }
   
-  
-  
   @Override
   public MotionEvent6 handleFeed( ) {
-    return new MotionEvent6(
-      0,0,0,0,0,0
-    );
+    
+    return new MotionEvent6( 0, 0, 0, 0, 0, 0 );
   }
 }
