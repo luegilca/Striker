@@ -14,24 +14,24 @@ private final int MAX_TOUCHES = 2;
 private final int INVALID_POINTER_ID = -1;
 
 private Scene scene;
-private ComplexAgent agent;
-private Shape eye, object;
+private AndroidAgent agent;
+private AndroidShape eye, object;
 
 String direction = null;
 
-private RotationGestureDetector rgd = new RotationGestureDetector(); 
+private RotationGestureDetector rotationDetector = new RotationGestureDetector(); 
 
 void setup( ){
-  fullScreen( P3D );
+  fullScreen( P3D, 1 );
   noStroke();
   orientation(LANDSCAPE);
   initialize( );
-  //scene = new Scene( this );
-  //agent = new ComplexAgent( scene );
+  scene = new Scene( this );
+  agent = new AndroidAgent( scene );
   
-  //eye = new Shape( scene );
-  //scene.setEye( eye );
-  //scene.setFieldOfView(PI / 3);
+  eye = new AndroidShape( scene );
+  scene.setEye( eye );
+  scene.setFieldOfView(PI / 3);
   
   //object = new Shape( scene, createShape(RECT,100,100,100,50) );
   //object.scale(1);
@@ -90,6 +90,6 @@ boolean surfaceTouchEvent( MotionEvent me ) {
  
   // If you want the variables for motionX/motionY, mouseX/mouseY etc.
   // to work properly, you'll need to call super.surfaceTouchEvent().
-  rgd.onTouchEvent( me );
+  rotationDetector.onTouchEvent( me );
   return super.surfaceTouchEvent(me);
 }

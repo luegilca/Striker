@@ -1,52 +1,56 @@
 public class RotationGestureDetector implements GestureDetector {
     private float mAngle;
     private float toleranceX, toleranceY;
+    private float[] rotation;
     
     public RotationGestureDetector( ) {
       this.toleranceX = 8;
       this.toleranceY = 8;
+      this.rotation = null;
     }
     
     public RotationGestureDetector( float _toleranceX, float _toleranceY ) {
       this.toleranceX = _toleranceX;
       this.toleranceY = _toleranceY;
+      this.rotation = null;
     }
 
     public float getAngle() {
-        return mAngle;
+      return mAngle;
+    }
+    
+    public float[] getRotation( ) {
+      return rotation; 
     }
     
     public boolean onTouchEvent( MotionEvent me ){
       switch ( me.getActionMasked( ) ) {
         case MotionEvent.ACTION_POINTER_DOWN:
-          println( "POINTERDOWN" );
+          direction = null;
           break;
         case MotionEvent.ACTION_MOVE:
-          println( "MOVING" );
-          println( "is moving first?: " + changedPosition( eventList[ 0 ] ));
-          println( "is moving secondo?: " + changedPosition( eventList[ 1 ] ) );
-          //Attempting XY Rotations
-          // Pinned first finger
-          float[] rotation = null;
-          if( ( !changedPosition( eventList[ 0 ] ) && changedPosition( eventList[ 1 ] ) ) ) {
-             //Rotate X or Y
-             rotation  = xyRotation( eventList[ 1 ] );             
+          if( me.getPointerCount( ) == 2 ) {         
+            //Attempting XY Rotations
+            // Pinned first finger
+            if( ( !changedPosition( eventList[ 0 ] ) && changedPosition( eventList[ 1 ] ) ) ) {
+               //Rotate X or Y
+               rotation  = xyRotation( eventList[ 1 ] );             
+            }
+            else if( !changedPosition( eventList[ 1 ] ) && changedPosition( eventList[ 0 ] ) ) {
+               //Rotate X or Y
+               rotation = xyRotation( eventList[ 0 ] );             
+            }
+            //Z rotation, both fingers moving
+            else if( changedPosition( eventList[ 0 ] ) && changedPosition( eventList[ 1 ] ) ) {
+               //Rotate X or Y
+               rotation = zRotation( eventList[ 0 ], eventList[ 1 ] );             
+            }
+            println( rotation );
           }
-          else if( !changedPosition( eventList[ 1 ] ) && changedPosition( eventList[ 0 ] ) ) {
-             //Rotate X or Y
-             rotation = xyRotation( eventList[ 0 ] );             
-          }
-          //Z rotation, both fingers moving
-          else if( changedPosition( eventList[ 0 ] ) && changedPosition( eventList[ 1 ] ) ) {
-             //Rotate X or Y
-             rotation = zRotation( eventList[ 0 ], eventList[ 1 ] );             
-          }
-          println( rotation );
           break;
         case MotionEvent.ACTION_POINTER_UP:
-          println( "POINTERUP" );
-          break;
-          
+          direction = null;
+          break;          
       }
       return true;
     }
