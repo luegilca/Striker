@@ -1,8 +1,8 @@
 public class PointList {
-  private HashMap<Integer, Point> list;
+  private HashMap<Integer, mPoint> list;
   
   public PointList( ) {
-    list = new HashMap<Integer, Point>( );
+    list = new HashMap<Integer, mPoint>( );
   }
   
   public synchronized void paint( ) {
@@ -11,8 +11,8 @@ public class PointList {
     Set<Integer> keyList = list.keySet( );
     Iterator<Integer> it = keyList.iterator( );
     int counter = 0;
-    Point anchor = null;
-    LinkedList<Point> lili = new LinkedList<Point>();
+    mPoint anchor = null;
+    LinkedList<mPoint> lili = new LinkedList<mPoint>();
     while( it.hasNext( ) ) {
       anchor = list.get( it.next( ) );
       lili.add( anchor );
@@ -24,7 +24,7 @@ public class PointList {
       Object[] array = lili.toArray();
       for( int i = 0; i < array.length; i++ ) {
         for( int j = i + 1; j < array.length; j++ ) {
-          drawLine( (Point) array[i], (Point) array[j] );
+          drawLine( (mPoint) array[i], (mPoint) array[j] );
         }
       }
     }
@@ -33,7 +33,7 @@ public class PointList {
     text("Active elements: " + counter, 10, 25 );
   }
   
-  synchronized void drawLine( Point a, Point b ) {
+  synchronized void drawLine( mPoint a, mPoint b ) {
     line( a.getPosX( ), a.getPosY( ), b.getPosX( ), b.getPosY( ) );
   }
   
@@ -48,7 +48,7 @@ public class PointList {
   
   synchronized void insert( int id, float x, float y ) {
     if( list.get(id) == null )
-      list.put(id, new Point( id, x, y ) );
+      list.put(id, new mPoint( id, x, y ) );
   }
   
   synchronized void update(int id, float x, float y) {

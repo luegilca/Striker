@@ -1,16 +1,16 @@
-public class Point {
+public class mPoint {
   private float posX, posY;
   private int id;
   private int textSize;
   
-  public Point( int _id, float _posX, float _posY ) {
+  public mPoint( int _id, float _posX, float _posY ) {
     this.id = _id;
     this.posX = _posX;
     this.posY = _posY;
     this.textSize = 30;
   }
   
-  public Point( int _id, float _posX, float _posY, int _textSize ) {
+  public mPoint( int _id, float _posX, float _posY, int _textSize ) {
     this.id = _id;
     this.posX = _posX;
     this.posY = _posY;

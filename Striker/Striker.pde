@@ -1,7 +1,16 @@
 import java.util.*;
 
+import android.content.Context;
+import android.app.Activity;
+//import android.hardware.Sensor;
+//import android.hardware.SensorManager;
+//import android.hardware.SensorEvent;
+//import android.hardware.SensorEventListener;
 import android.view.MotionEvent;
 import android.view.View;
+
+import processing.data.JSONArray;
+import processing.data.JSONObject;
 
 import frames.core.*;
 import frames.primitives.*;
@@ -9,77 +18,109 @@ import frames.processing.*;
 import frames.input.*;
 import frames.input.event.*;
 
-private MultiTouchEvent[] eventList;
-private final int MAX_TOUCHES = 2;
-private final int INVALID_POINTER_ID = -1;
+MultiTouchEvent[] eventList;
+final int MAX_TOUCHES = 2;
+final int INVALID_POINTER_ID = -1;
+final int TOUCH_ID = 102; 
 
-private Scene scene;
-private AndroidAgent agent;
-private AndroidShape eye, object;
+float rotationCalibration = 10;
+float coordTolerance = 3;
+float distTolerance = 30;
+float[] rotation = new float[ 2 ];
+float[] translation = new float[ 2 ];
+
+AndroidScene scene;
+AndroidAgent agent;
+AndroidShape eye, object;
 
 String direction = null;
+String direction2 = null;
+String event = null;
 
-private RotationGestureDetector rotationDetector = new RotationGestureDetector(); 
+boolean debugMessages = true;
 
-void setup( ){
+GestureDetector gestureDetector = new GestureDetector(); 
+
+PImage textureImg;
+PShape dice;
+
+void setup( ) {
   fullScreen( P3D, 1 );
-  noStroke();
+  lights();
   orientation(LANDSCAPE);
   initialize( );
-  scene = new Scene( this );
+
+  scene = new AndroidScene(this);
   agent = new AndroidAgent( scene );
   
   eye = new AndroidShape( scene );
   scene.setEye( eye );
   scene.setFieldOfView(PI / 3);
   
-  //object = new Shape( scene, createShape(RECT,100,100,100,50) );
-  //object.scale(1);
-  //smooth();
+  textureImg = loadImage( "dice.png" );
+  dice = loadShape( "dice.obj" );
+  dice.setTexture( textureImg );
   
-  //scene.setDefaultGrabber( eye );
-  //scene.setRadius(260);
-  //scene.fitBallInterpolation( );
+  object = new AndroidShape( scene, dice );
+  //object.translate(new frames.primitives.Vector(0, 0, 0));
+  object.scale(100);
+  
+  scene.setDefaultGrabber( eye );
+  scene.setRadius(260);
+  scene.fitBallInterpolation( );
 }
 
 void draw( ) {
   background( color( 0, 91, 171 ) );  
-  lights();
-  pushMatrix( );
-  textSize( 100 );
-  text( "ROTATING in " + direction, 100, 100 );
-  translate(width/2, height/2);
-  rotateY(frameCount*PI/200);
-  box(200);
+  scene.traverse( );
+  if( debugMessages ) {
+    scene.beginScreenCoordinates( );
+    textSize( 30 );
+    text( "Motion:rotation in " + direction, 100, 100 );
+    text( "Motion:translation in " + direction2, 100, 130 );
+    text( "Vector:rotation " + Arrays.toString(rotation), 100, 160 );
+    text( "Vector:translation " + Arrays.toString(translation), 100, 190 );
+    text( "Event: " + event, 100, 220 );
+    scene.endScreenCoordinates( );
+  }  
+  //if (mousePressed == true) {
+  //  // ...for each possible touch event...
+  //  for (int i=0; i < MAX_TOUCHES; i++) {
+  //    // If that event been touched...
+  //    if (eventList[i].touched == true) {
+  //      // DO SOMETHING WITH IT HERE:
+  //      ellipse( eventList[i].motionX, eventList[i].motionY, 50, 50 );
+  //      //println( eventList[i] );
+  //    }
+  //  }
+  //}
+}
+
+
+void push() {
+  pushStyle();
+  pushMatrix();
+}
+
+void pop() {
+  popStyle();
   popMatrix();
-  if (mousePressed == true) {
-    // ...for each possible touch event...
-    for(int i=0; i < MAX_TOUCHES; i++) {
-      // If that event been touched...
-      if(eventList[i].touched == true) {
-        // DO SOMETHING WITH IT HERE:
-        ellipse( eventList[i].motionX, eventList[i].motionY, 50, 50 );
-        //println( eventList[i] );
-      }
-    }
-  }
-  //scene.traverse( ); 
 }
 
 private void initialize( ) {
   eventList = new MultiTouchEvent[ MAX_TOUCHES ];
-  for( int i = 0; i < MAX_TOUCHES; i++ ){
+  for ( int i = 0; i < MAX_TOUCHES; i++ ) {
     eventList[ i ] = new MultiTouchEvent( );
   }
 }
- 
+
 boolean surfaceTouchEvent( MotionEvent me ) {
   // Find number of touch points:
   int pointers = me.getPointerCount( );
- 
+
   //  Update MultiTouch that 'is touched':
-  for( int i = 0; i < MAX_TOUCHES; i++ ){
-    if( i < pointers ){
+  for ( int i = 0; i < MAX_TOUCHES; i++ ) {
+    if ( i < pointers ) {
       eventList[ i ].update( me, i );
     }
     // Update MultiTouch that 'isn't touched':
@@ -87,9 +128,9 @@ boolean surfaceTouchEvent( MotionEvent me ) {
       eventList[ i ].update();
     }
   }
- 
+
   // If you want the variables for motionX/motionY, mouseX/mouseY etc.
   // to work properly, you'll need to call super.surfaceTouchEvent().
-  rotationDetector.onTouchEvent( me );
+  gestureDetector.onTouchEvent( me );
   return super.surfaceTouchEvent(me);
 }

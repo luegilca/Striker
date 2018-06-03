@@ -12,10 +12,11 @@ public class AndroidAgent extends Agent {
   
   @Override
   public MotionEvent6 handleFeed( ) {
-    float[] rotation = rotationDetector.getRotation( );
-    float rx = 0.0;
-    float ry = 0.0;
-    float rz = 0.0;
+    rotation = gestureDetector.getRotation( );
+    translation = gestureDetector.getTranslation( );
+    float rx = 0.0, ry = 0.0, rz = 0.0;
+    float tx = 0.0, ty = 0.0, tz = 0.0;
+    
     switch( (int)rotation[ 0 ] ) {      
       case -1:
         rx = rotation[ 1 ];
@@ -27,6 +28,18 @@ public class AndroidAgent extends Agent {
         rz = rotation[ 1 ];
         break;
     }
-    return new MotionEvent6( 0, 0, 0, rx, ry, rz );
+    
+    switch( (int)translation[ 0 ] ) {      
+      case -1:
+        tx = translation[ 1 ];
+        break;
+      case 0:
+        ty = translation[ 1 ];
+        break;
+      case 1:
+        tz = translation[ 1 ];
+        break;
+    }
+    return new MotionEvent6( tx, ty, tz, ry, rx, rz, frames.input.Event.NO_MODIFIER_MASK, TOUCH_ID );
   }
 }
