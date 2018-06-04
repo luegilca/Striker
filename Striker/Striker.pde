@@ -21,14 +21,14 @@ final int MAX_TOUCHES = 2;
 final int INVALID_POINTER_ID = -1;
 final int TOUCH_ID = 102; 
 
-float rotationCalibration = 15;
-float coordTolerance = 0.5;
-float distTolerance = 20;
+float rotationCalibration = 10;
+float coordTolerance = 1;
+float distTolerance = 15;
 
 AndroidScene scene;
 AndroidAgent agent;
 AndroidShape eye;
-Shape object;
+AndroidShape object;
 
 String direction = null;
 String direction2 = null;
@@ -55,10 +55,10 @@ void setup( ) {
   dice = loadShape( "dice.obj" );
   dice.setTexture( textureImg );
   
-  object = new Shape( scene, dice );
-  //object.translate(new frames.primitives.Vector(0, 0, 0));
-  eye.rotate(new Quaternion(new Vector(0, 0, 1), PI));
+  object = new AndroidShape( scene, dice );  
   object.scale(100);
+  object.translate(new Vector(0, 0, 0));
+  eye.rotate(new Quaternion(new Vector(0, 0, 1), PI));
   
   scene.setEye( eye );
   scene.setFieldOfView(PI / 3);
@@ -71,10 +71,25 @@ void setup( ) {
 
 void draw( ) {  
   background( color( 0, 92, 107 ) );//background( color( 0, 91, 171 ) );
-  scene.drawAxes();  
   scene.traverse( );
-  interactionAgent( );  
+  //interactionAgent( ); 
+  if( debugMessages ) {
+    scene.drawAxes();
+    scene.beginScreenCoordinates( );
+    textSize( 30 );
+    text( "Motion:rotation in " + direction, 100, 100 );
+    text( "Motion:translation in " + direction2, 100, 130 );
+    //text( "Vector:rotation " + Arrays.toString(rotation), 100, 160 );
+    //text( "Vector:translation " + Arrays.toString(translation), 100, 190 );
+    scene.endScreenCoordinates( );
+  }  
 }
+
+final android.view.GestureDetector pressDetector = new android.view.GestureDetector(new android.view.GestureDetector.SimpleOnGestureListener() {
+    public void onLongPress(MotionEvent e) {
+        debugMessages = !debugMessages;
+    }
+});
 
 
 void push() {
@@ -112,48 +127,6 @@ boolean surfaceTouchEvent( MotionEvent me ) {
   // If you want the variables for motionX/motionY, mouseX/mouseY etc.
   // to work properly, you'll need to call super.surfaceTouchEvent().
   gestureDetector.onTouchEvent( me );
+  pressDetector.onTouchEvent(me);
   return super.surfaceTouchEvent(me);
-}
-
-void interactionAgent( ) {
-  float rx = 0.0, ry = 0.0, rz = 0.0;
-  float tx = 0.0, ty = 0.0, tz = 0.0;
-  float[] rotation = gestureDetector.getRotation( );
-  float[] translation = gestureDetector.getTranslation( );
-  
-  switch( (int)rotation[ 0 ] ) {      
-    case -1:
-      rx = rotation[ 1 ];
-      break;
-    case 0:
-      ry = rotation[ 1 ];
-      break;
-    case 1:
-      rz = rotation[ 1 ];
-      break;
-  }
-  switch( (int)translation[ 0 ] ) {      
-    case -1:
-      tx = translation[ 1 ];
-      break;
-    case 0:
-      ty = translation[ 1 ];
-      break;
-    case 1:
-      tz = translation[ 1 ];
-      break;
-  }
-  
-  object.rotate( new Quaternion( rx, ry, rz ) );
-  object.translate( tx, ty, tz );
-  
-  if( debugMessages ) {
-    scene.beginScreenCoordinates( );
-    textSize( 30 );
-    text( "Motion:rotation in " + direction, 100, 100 );
-    text( "Motion:translation in " + direction2, 100, 130 );
-    text( "Vector:rotation " + Arrays.toString(rotation), 100, 160 );
-    text( "Vector:translation " + Arrays.toString(translation), 100, 190 );
-    scene.endScreenCoordinates( );
-  }  
 }

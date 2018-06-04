@@ -55,6 +55,7 @@ public class GestureDetector{
     
     private void reset( ) {
       direction = null;
+      direction2 = null;
       rotation[ 0 ] = 0;
       rotation[ 1 ] = 0;
       translation[ 0 ] = 0;
@@ -137,6 +138,8 @@ public class GestureDetector{
         direction2 = "Y in " + distance + "units";
         translation[ 0 ] = 0.0;
         translation[ 1 ] = distance;
+        rotation[ 0 ] = 0.0;
+        rotation[ 1 ] = 0.0;
       } 
     }
     

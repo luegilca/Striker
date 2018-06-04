@@ -1,7 +1,6 @@
 public class AndroidShape extends Shape {  
-  public AndroidShape(Scene scene) {
+  public AndroidShape(Scene scene) {    
     super(scene);
-    scene.drawAxes();
   }
   
   public AndroidShape(Node node) {
@@ -26,19 +25,16 @@ public class AndroidShape extends Shape {
   // behavior is here
   @Override
   public void interact(frames.input.Event ev) {
-    println( ev.shortcut().id( ) + " " + ev.shortcut().modifiers());
-    //if (ev.shortcut().matches(new Shortcut(TOUCH_ID)))
-    //  translateRotateXYZ(ev);
-    //if (ev.shortcut().matches(new Shortcut(RIGHT)))
-    //  translate(ev);
-    //if (ev.shortcut().matches(new Shortcut(LEFT)))
-    //  rotate(ev);
-    //if (ev.shortcut().matches(new Shortcut(CENTER)))
-    //  rotate(ev);
-    ////if (ev.shortcut().matches(new Shortcut(processing.event.MouseEvent.WHEEL)))
-    //  if (isEye() && graph().is3D())
-    //    translateZ(ev);
-    //  else
-    //    scale(ev)
+    if( ev.shortcut( ).matches( new Shortcut(TOUCH_ID ) ) ) {
+      MotionEvent6 motion = ( MotionEvent6 )ev;
+      float tx = motion.dx( );
+      float ty = motion.dy( );
+      float tz = motion.dz( );
+      float rx = motion.drx( );
+      float ry = motion.dry( );
+      float rz = motion.drz( );
+      this.rotate( new Quaternion( rx, ry, rz ) );
+      this.translate( new Vector( tx, ty, tz ) );
+    }
   }
 }

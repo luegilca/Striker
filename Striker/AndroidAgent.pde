@@ -11,7 +11,34 @@ public class AndroidAgent extends Agent {
   }
   
   @Override
-  public MotionEvent6 handleFeed( ) {    
-    return new MotionEvent6( 0, 0, 0, 0, 0, 0, frames.input.Event.NO_MODIFIER_MASK, TOUCH_ID );
+  public MotionEvent6 handleFeed( ) {  
+    float rx = 0.0, ry = 0.0, rz = 0.0;
+    float tx = 0.0, ty = 0.0, tz = 0.0;
+    float[] rotation = gestureDetector.getRotation( );
+    float[] translation = gestureDetector.getTranslation( );
+    
+    switch( (int)rotation[ 0 ] ) {      
+      case -1:
+        rx = rotation[ 1 ];
+        break;
+      case 0:
+        ry = rotation[ 1 ];
+        break;
+      case 1:
+        rz = rotation[ 1 ];
+        break;
+    }
+    switch( (int)translation[ 0 ] ) {      
+      case -1:
+        tx = translation[ 1 ];
+        break;
+      case 0:
+        ty = translation[ 1 ];
+        break;
+      case 1:
+        tz = translation[ 1 ];
+        break;
+    }
+    return new MotionEvent6( tx, ty, tz, rx, ry, rz, frames.input.Event.NO_MODIFIER_MASK, TOUCH_ID );
   }
 }
