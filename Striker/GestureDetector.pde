@@ -1,31 +1,18 @@
 public class GestureDetector{
-    private float mAngle;
-    private float toleranceX, toleranceY, distanceTolerance;
     private float[] rotation;
     private float[] translation;
     
     public GestureDetector( ) {
-      this.toleranceX = 6;
-      this.toleranceY = 6;
-      this.distanceTolerance = 100;
-      this.rotation = new float[ 2 ];
-      this.translation = new float[ 2 ];
-    }
-    
-    public GestureDetector( float _toleranceX, float _toleranceY, float _distanceTolerance ) {
-      this.toleranceX = _toleranceX;
-      this.toleranceY = _toleranceY;
-      this.distanceTolerance = _distanceTolerance;
       this.rotation = new float[ 2 ];
       this.translation = new float[ 2 ];
     }
     
     public float[] getRotation( ) {
-      return rotation; 
+      return this.rotation; 
     }
     
     public float[] getTranslation( ) {
-      return translation; 
+      return this.translation; 
     }
     
     public boolean onTouchEvent( MotionEvent me ){
@@ -48,10 +35,6 @@ public class GestureDetector{
               if( ( !changedPosition( eventList[ 0 ] ) && changedPosition( eventList[ 1 ] ) ) ) {
                  //Rotate X or Y
                  xyRotation( eventList[ 1 ] );
-              }
-              else if( !changedPosition( eventList[ 1 ] ) && changedPosition( eventList[ 0 ] ) ) {
-                 //Rotate X or Y
-                 xyRotation( eventList[ 0 ] ); 
               }
             }            
           }
@@ -91,11 +74,14 @@ public class GestureDetector{
       float angle = 0.0;
       float distance = 0.0;
       angle = angleBetweenLines ( fX, fY, sX, sY, nfX, nfY, nsX, nsY );
-      distance = distance( nfX, nfY, nsX, nsY );    
+      float prevDistance = distance( fX, fY, sX, sY );
+      distance = distance( nfX, nfY, nsX, nsY );   
+      if( angle < 0 ) 
+        angle += rotationCalibration; 
+      else 
+        angle -= rotationCalibration;
       
-      if( Math.abs(angle) > rotationCalibration ) {  
-        if( angle < 0 ) angle += rotationCalibration; 
-        else angle -= rotationCalibration;
+      if( Math.abs(angle) > rotationCalibration ) {         
         direction = "Z in " + angle + " degrees";
         direction2 = null;        
         rotation[ 0 ] = 1.0;
@@ -105,7 +91,10 @@ public class GestureDetector{
       }
       else {
         direction = null;
+        //Getting closer
+        if( prevDistance > distance ) distance *= -1;
         direction2 = "Z with " + distance + " distance";
+        event = "" + distance;
         rotation[ 0 ] = 1.0;
         rotation[ 1 ] = 0.0;
         translation[ 0 ] = 1.0;
@@ -122,12 +111,12 @@ public class GestureDetector{
       float orientation = 0.0;
       
       if( changedXPosition( e ) ) {
-        amount = Math.abs( pX - x );
+        amount = pX - x;
         direction = "X in " + amount + " degrees";
         orientation = -1.0;
       }
       else if( changedYPosition( e ) ) {
-        amount = Math.abs( pY - y );
+        amount = -1 * (pY - y);
         direction = "Y in " + amount + " degrees";
         orientation = 0.0;
       }
@@ -140,7 +129,7 @@ public class GestureDetector{
       float angle1 = ( float ) Math.atan2( ( fY - sY ), ( fX - sX ) );
       float angle2 = ( float ) Math.atan2( ( nfY - nsY ), ( nfX - nsX ) );
 
-      float angle = ( ( ( float ) Math.toDegrees( angle1 - angle2 ) ) % 360 ) * 18;
+      float angle = ( ( ( float ) Math.toDegrees( angle1 - angle2 ) ) % 360 ) * 20;
       if (angle < -180.f) angle += 360.0f;
       if (angle > 180.f) angle -= 360.0f;
       return angle;
@@ -154,5 +143,9 @@ public class GestureDetector{
     }
     private boolean changedPosition( MultiTouchEvent e ) {
       return changedXPosition( e ) || changedYPosition( e );
+    }
+    
+    public void onLongPress(MotionEvent e) {
+        event = " LONG " + e.getActionMasked( );
     }
 }
