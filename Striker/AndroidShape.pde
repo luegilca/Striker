@@ -1,6 +1,7 @@
 public class AndroidShape extends Shape {  
   public AndroidShape(Scene scene) {
     super(scene);
+    scene.drawAxes();
   }
   
   public AndroidShape(Node node) {

@@ -35,10 +35,10 @@ public class GestureDetector{
                  //Rotate X or Y
                  xyRotation( eventList[ 1 ] );
               }
-              else if ( ( Helper.changedPosition( eventList[ 0 ], coordTolerance ) && !Helper.changedPosition( eventList[ 1 ], coordTolerance ) ) ) {
-                 //Rotate X or Y
-                 xyRotation( eventList[ 0 ] );
-              }
+              //else if ( ( Helper.changedPosition( eventList[ 0 ], coordTolerance ) && !Helper.changedPosition( eventList[ 1 ], coordTolerance ) ) ) {
+              //   //Rotate X or Y
+              //   xyRotation( eventList[ 0 ] );
+              //}
             }            
           }
           else if( me.getPointerCount( ) == 1 ) {
@@ -86,6 +86,7 @@ public class GestureDetector{
         direction = null;
         //Getting closer
         if( prevDistance > distance ) distance *= -1;
+        if( Float.isNaN( distance ) ) distance = 0.0;
         direction2 = "Z with " + distance + " distance";
         event = "" + distance;
         rotation[ 0 ] = 1.0;
@@ -114,7 +115,7 @@ public class GestureDetector{
         orientation = 0.0;
       }
       rotation[ 0 ] = orientation;
-      rotation[ 1 ] = amount;
+      rotation[ 1 ] = amount / 10;
       translation[ 0 ] = 0.0;
       translation[ 1 ] = 0.0;
     }

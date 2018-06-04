@@ -14,7 +14,7 @@ public static class Helper{
     float angle1 = ( float ) Math.atan2( ( fY - sY ), ( fX - sX ) );
     float angle2 = ( float ) Math.atan2( ( nfY - nsY ), ( nfX - nsX ) );
 
-    float angle = ( ( ( float ) Math.toDegrees( angle1 - angle2 ) ) % 360 );
+    float angle = ( ( ( float ) Math.toDegrees( angle1 - angle2 ) ) % 360 ) * 25;
     if (angle < -180.f) angle += 360.0f;
     if (angle > 180.f) angle -= 360.0f;
     return angle;

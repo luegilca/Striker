@@ -21,8 +21,8 @@ final int MAX_TOUCHES = 2;
 final int INVALID_POINTER_ID = -1;
 final int TOUCH_ID = 102; 
 
-float rotationCalibration = 2;
-float coordTolerance = 5;
+float rotationCalibration = 15;
+float coordTolerance = 0.5;
 float distTolerance = 20;
 
 AndroidScene scene;
