@@ -21,7 +21,7 @@ final int MAX_TOUCHES = 2;
 final int INVALID_POINTER_ID = -1;
 final int TOUCH_ID = 102; 
 
-float rotationCalibration = 30;
+float rotationCalibration = 2;
 float coordTolerance = 5;
 float distTolerance = 20;
 
@@ -36,8 +36,7 @@ String event = null;
 
 boolean debugMessages = true;
 
-GestureDetector gestureDetector = new GestureDetector(); 
-
+GestureDetector gestureDetector = new GestureDetector( ); 
 PImage textureImg;
 PShape dice;
 
@@ -71,7 +70,7 @@ void setup( ) {
 }
 
 void draw( ) {  
-  background(0);//background( color( 0, 91, 171 ) );
+  background( color( 0, 92, 107 ) );//background( color( 0, 91, 171 ) );
   scene.drawAxes();  
   scene.traverse( );
   interactionAgent( );  
@@ -124,16 +123,15 @@ void interactionAgent( ) {
   
   switch( (int)rotation[ 0 ] ) {      
     case -1:
-      ry = rotation[ 1 ];
+      rx = rotation[ 1 ];
       break;
     case 0:
-      rx = rotation[ 1 ];
+      ry = rotation[ 1 ];
       break;
     case 1:
       rz = rotation[ 1 ];
       break;
   }
-  
   switch( (int)translation[ 0 ] ) {      
     case -1:
       tx = translation[ 1 ];
@@ -146,7 +144,7 @@ void interactionAgent( ) {
       break;
   }
   
-  object.rotate(new Quaternion(rx, ry, rz, 1.0));
+  object.rotate( new Quaternion( rx, ry, rz ) );
   object.translate( tx, ty, tz );
   
   if( debugMessages ) {
